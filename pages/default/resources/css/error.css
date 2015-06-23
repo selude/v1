@@ -1,0 +1,45 @@
+*
+{
+ margin:0;
+ padding:0;
+}
+body
+{
+ font-family:sans-serif,calibri,arial;
+ font-size:12px;
+}
+.framework_error
+{
+ font-family:calibri,sans-serif,tahoma,arial;
+ font-size:14px;
+}
+.framework_error h2
+{
+ background:rgb(243,105,113);
+ color:white;
+}
+.framework_error p,.framework_error h2,.framework_error h3
+{
+ padding:10px 5px;
+}
+.header
+{
+ background:rgb(9,9,9);
+ color:white;
+ padding:10px;
+ font-size:200%;
+}
+.page
+{/* 
+ background:rgb(255,100,100); 
+ color:white;*/
+ padding:10px;
+ font-size:200%;
+}
+.footer_wrapper
+{
+ background:rgb(195,195,195);
+ color:black;
+ font-size:80%;
+ padding:10px 5px;
+}

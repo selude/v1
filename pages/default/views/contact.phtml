@@ -1,0 +1,84 @@
+<div id='location_map'>
+</div>
+<div class='contact_wrapper clearfix'>
+    <div class='contact_page col-lg-offset-1 col-lg-10'>
+        <h2>Reach Us here:</h2>
+        <div class='clearfix'>
+            <div class='col-lg-6 contact-us'>
+                <div class='heading'>our dubai address</div>
+                <div class='clearfix list'>
+                    <p>405, Naif AL Habtoor building,<p>Near baniyas metro station<p>Nasser square, Diera,<p>PO Box 334573,<p>Dubai- UAE</p>
+                    <div>Call Us: +971-42503108, +971-42271753</div>
+                    <div>Fax: +971-42503109</div>
+                    <div>Mail Us: <br><a href='mailto:cseer90@hotmail.com'>cseer90@hotmail.com</a>
+                </div>
+            </div>
+            <div class='col-lg-5 col-lg-offset-1 contact-us'>
+                <?php
+                $sent = session::get('form_done');
+                if($sent)
+                {
+                 echo '<p class="bg-success" style="padding:8px; font-size:120%">Your query has been submitted successfully. You will recieve a confirmation mail shortly.';
+                }
+                session::set('form_done',false);
+                ?>
+                <div class='heading'>Mail us your query</div>
+                <div class='form-group'>
+                    <form action='' method='post' onsubmit='return validateQuery();'>
+                        <div class='input-group'>
+                            <div class='input-group-addon'>
+                                <span class='glyphicon glyphicon-user'></span>
+                            </div>
+                            <input class='form-control col-lg-10' type='text' placeholder='Your Name' name='name'>
+                        </div>
+                        <div class='input-group'>
+                            <div class='input-group-addon'>
+                                <span class='glyphicon glyphicon-envelope'></span>
+                            </div>
+                            <input class='form-control col-lg-10' type='text' placeholder='Your Email address' name='email'>
+                        </div>
+                        <div class='input-group'>
+                            <div class='input-group-addon'>
+                                <span class='glyphicon glyphicon-phone'></span>
+                            </div>
+                            <input class='form-control col-lg-10' type='text' placeholder='Your Contact number' name='contact'>
+                        </div>
+                        <div class='input-group'>
+                            <textarea class='form-control col-lg-10' placeholder='Your query' rows=5 style='width:100%' style='resize:none;' name='query'></textarea>
+                        </div>
+                        <input type='submit' value='Submit' class='btn btn-lg btn-primary'>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js">
+</script>
+<script>
+function initialize() 
+{
+    var mapCanvas = document.getElementById('location_map');
+    var latLong =  new google.maps.LatLng(25.26964,55.30910);
+    var mapOptions = {
+                      center: latLong,
+                      zoom: 14,
+                      mapTypeId: google.maps.MapTypeId.ROADMAP
+                    }
+    var map = new google.maps.Map(mapCanvas, mapOptions);
+    
+    // To add the marker to the map, use the 'map' property
+    
+    var marker = new google.maps.Marker({
+        position: latLong,
+        map: map,
+        draggable:true,
+        animation: google.maps.Animation.DROP,
+        title:"Head Office, Simran Trading LLC"
+    });
+    // To add the marker to the map, call setMap();
+    marker.setMap(map);
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>

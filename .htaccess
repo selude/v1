@@ -1,0 +1,31 @@
+﻿# Disable Directory Listings in this Directory and Subdirectories
+# This will hide the files from the public unless they know direct URLs
+Options -Indexes
+Options +FollowSymlinks
+
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^your-domain-name-here.com$
+RewriteRule (.*) http://www.your-domain-name-here.com/$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !POST
+RewriteCond %{REQUEST_FILENAME} !FILE
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
+
+ErrorDocument 403 /forbidden.html
+ErrorDocument 404  /forbidden.html
+
+# Enable Basic Authentication
+#AuthType Basic
+ 
+# This is what will be displayed to the user on the login dialog.
+#AuthName "Please enter the admin username and password."
+ 
+# This you must edit.  It is the absolute path to the .htpasswd file.
+#AuthUserFile /.htpasswd
+ 
+# This allows any user from inside the .htpasswd file to access the
+# content if they provide the proper username and password.
+#Require valid-user

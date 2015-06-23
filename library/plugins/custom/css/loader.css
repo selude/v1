@@ -1,0 +1,42 @@
+#loader
+{
+ position:fixed;
+ left:5%;
+ top:5%;
+ width:90%;
+ height:90%;
+ background:rgba(0,0,0,.4);
+ z-index:10000;
+ text-align:center;
+}
+.loader-container
+{
+ border:10px solid #999999;
+ text-align:left;
+ display:inline-block;
+ margin:0 auto;
+ margin-top:20%;
+ padding:10px;
+ background:#fff;
+ z-index:10000;
+ user-select:none;
+}
+.loader-container .img
+{
+ display:inline-block;
+ float:left;
+ min-width:40px;
+ min-height:40px;
+ background:url('../../../../pages/default/resources/images/loader.gif') no-repeat;
+ vertical-align:middle;
+}
+.loader-container .text
+{
+ display:inline-block;
+ float:left;
+ margin-left:10px;
+}
+.loader-container .text:after
+{
+ clear:both;
+}

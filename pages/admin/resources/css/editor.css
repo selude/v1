@@ -1,0 +1,11 @@
+.ceditor-list.sidebar
+{
+ padding:0 !important;
+}
+.ceditor-list.sidebar .editor-label
+{
+ color:#fff;
+ background:#444444;
+ margin:0 !important;
+ padding:10px;
+}

@@ -1,0 +1,13 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Sayed
+ * Date: 31-05-2015
+ * Time: 02:45
+ * Purpose: Display 404 error on live environment
+ */
+ ///Customize this page as per your requirement
+header("HTTP/1.0 404 Not Found");
+?>
+<h1> Error 404</h1>
+<p>The page you are looking for at this URL doesnot exist. Please make sure you have typed the page URL correctly. Otherwise, please contact us at <a href='mailto:<?php echo contact_email?>'><?php echo contact_email?></a></p>

@@ -1,0 +1,40 @@
+<div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand homelink_wrapper" href="<?php echo baseURL; ?>">
+		  <img src='<?php echo baseURL.DS.'pages/default/resources/images/logo.png'?>' class='home_icon'>
+		  <?php
+		  global $configuration;
+		  echo $configuration['about']['label']; 
+		  ?>
+	  </a>
+      <a class="navbar-brand homelink_wrapper" id='homelink_wrapper' href="<?php echo baseURL; ?>/admin">
+		  : Administrator
+	  </a>
+    </div>
+	
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+	  <?php
+		$link = baseURL.DS.PAGE;
+		$list = array('home'=>'index',
+                      'pages'=>'pages',
+                      'code_editor'=>'ceditor',
+                      'database'=>'db'
+                      // ,'modules'=>'module'
+                      );
+		foreach($list as $key=>$li)
+		{
+		 $cl = VIEW==$li?' class="active"':'';
+		 echo "<li$cl><a href='$link/$li'>".ucwords(str_replace('_',' ',$key))
+		 .'</a>';
+		}
+	  ?>
+      </ul>
+    </div>
+</div>

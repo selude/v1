@@ -1,0 +1,173 @@
+*
+{
+ margin:0;
+ padding:0;
+}
+body
+{
+ font-family:sans-serif,arial,calibri;
+ font-size:12px;
+ background-color:#e9e9e9 !important;
+ position:relative !important;
+}
+input
+{
+ font-weight:normal;
+}
+@viewport 
+{
+    max-zoom: 1;
+    orientation: landscape;
+}
+
+.theme
+{
+ color:rgb(242,100,107);
+}
+.mini_logo_wrapper
+{
+ position:absolute;
+ top:0;
+ display:none;
+}
+.mini_logo_container
+{
+ padding:6px 10px;
+ background:#222222;
+ position:relative;
+ z-index:100;
+ vertical-align:top;
+}
+.mini_logo_container:after
+{
+ content:"";
+ position:absolute;
+ left:0;
+ bottom:-19px;
+ background:url('../images/blacktip_bottom.png') no-repeat;
+ background-size:contain;
+ width:100%;
+ height:20px;
+}
+.mini_logo_container a img
+{
+ max-width:30px;
+}
+.curtain_wrapper
+{
+ position:fixed;
+ left:0;
+ top:0;
+ width:100%;
+ height:100%;
+ z-index:1000;
+ background:rgba(0,0,0,.9);
+ display:none;
+ padding:0 !important;
+}
+.curtain_close
+{
+ position:absolute;
+ right:10px;
+ top:10px;
+ color:#fff !important;
+ font-size:20px;
+ z-index:10000;
+}
+.curtain_close span
+{
+ cursor:pointer;
+}
+#curtain
+{
+ padding:0 !important;
+ display:table !important;
+ width:100% !important;
+ height:100% !important;
+}
+.page_default
+{
+ padding:0 !important;
+ margin:0 !important;
+}
+.hidden
+{
+ display:none;
+}
+
+.footer_wrapper
+{
+ background:#fff;
+ border-top:1px solid #c3c3c3;
+ border-bottom:1px solid #c3c3c3;
+ padding:0 !important;
+}
+
+.social_menu
+{
+ display:block;
+ padding-left:0 !important;
+ padding-right:0 !important; 
+ margin-bottom:0;
+}
+
+.social_menu li
+{
+ list-style:none;
+ display:inline-block;
+ text-transform:uppercase;
+ font-weight:bold;
+ border-left:1px solid #c3c3c3;
+ transition:all .1s ease-out;
+ vertical-align:top;
+}
+.social_menu li a
+{
+ display:block;
+ padding:15px;
+}
+.social_menu li a img
+{
+ max-width:17px;
+}
+.social_menu li:first-child
+{
+ border-left:none;
+ padding:15px 10px;
+}
+.social_menu li:last-child
+{
+ border-right:1px solid #555555;
+}
+.social_menu li:not(:first-child)
+{
+ background:#555555;
+ color:#fff;
+}
+.social_menu li#fb:hover
+{
+ background:#45619D;
+}
+.social_menu li#twitter:hover
+{
+ background:#55ACEE;
+}
+.social_menu li#gplus:hover
+{
+ background:#DD4B39;
+}
+.social_menu li#in:hover
+{
+ background:#00A8F0;
+}
+.footer_wrapper_bottom
+{
+ border-top:1px solid #c3c3c3;
+ font-size:12px;
+ color:#777777;
+ padding:10px 0;
+}
+.footer_wrapper_bottom div
+{
+ padding:0;
+}

@@ -1,0 +1,114 @@
+<?php
+$this->_import('library.modal.mail');
+class UserMail extends Mail
+{
+ var $headers;
+ var $url;
+ var $base;
+ public function forWelcomeActivation($data)
+ {
+  $this->base = trim(baseURL,'/');
+  $link = baseURL.'/user/profile/go/activate/id/'.$data['user_id'].'/token/'.$data['token'];
+  $html = '<h4>Dear Customer,</h4>
+  <p>Congratulations, you have successfully created your account at BookAvenue and we are glad that you took your time to register on BookAvenue and now, here we are, ready to help!<p>
+  Your login email is: <span style="color:rgb(241,100,107)">'.$data['email'].'</span>
+  <p>
+  As a registered user and our valued customer, you can now browse BookAvenue seemlessly and use all the features. But as some of those features require you to verify and update your account information, you might like to do so now. No cut to the chase but just in case if you would like to verify your account, please use the token below to enter it on the page that might be showing up on your BookAvenue window right now.<p><br>
+  <b>Token : '.$data['token'].'</b><br>
+  <p>
+  If the above token doesn\'t work, you can use the below link to verify your account. And in that case this link doesn\'t work, you can simply copy and paste it in your browser:<br>
+  <b>Verification link: <a href="'.$link.'" target="_blank">'.$link.'</a></b>';
+  $html .= '<br><p>If you face any issue in getting access to your account, please feel free to contact us at <span style="color:rgb(241,100,107);">support@'.$this->base.'. We would really be glad to be of use to you.';
+  $html .= '<br><p>We hope to see you soon. Happy BOOKing!';
+  $this->setMailLayout($html,'Welcome to BookAvenue!');
+  $subject = 'Welcome! Activate your account';
+  return $this->send($data['email'],$subject,$html,$this->headers);
+ }
+ 
+ public function forResendToken($token)
+ {
+  $this->base = trim(baseURL,'/');
+  $this->url = 'www.'.$this->base;
+  $user = session::get('user');
+  $link = $this->url.'/user/profile/go/activate/id/'.$user->id.'/token/'.$token;
+  $name = $user->first_name;
+  $html = '<h4>Dear <b>'.$name.'</b>,</h4>
+  <p>We recieved a request that you wanted to verify your account. If you didn\'t do this, immediately contact our support service as your account may have been compromised. If you did this, you can proceed with your account verification.<p>
+  <br><p>
+  Please use the token below to verify your account</p><br>
+  <b>Token : '.$token.'</b><br>
+  <p>
+  If the above token doesn\'t work, you can use the below link to verify your account. And in that case this link doesn\'t work, you can simply copy and paste it in your browser:<br>
+  <b>Verification link: <a href="'.$link.'" target="_blank">'.$link.'</a></b>';
+  $html .= '<br><p>If you face any issue in getting access to your account, please feel free to contact us at <span style="color:rgb(241,100,107);">support@'.$this->base.'. We would be really glad to be of use to you.';
+  $html .= '<br><p>We hope to see you soon. Happy BOOKing!';
+  $this->setMailLayout($html,'Verify your accont');
+  $subject = 'Account verification link';
+  return $this->send($user->email,$subject,$html,$this->headers);
+ }
+ 
+ public function forAccountActivated()
+ {
+  $this->base = trim(baseURL,'/');
+  $this->url = 'www.'.$this->base;
+  $user = session::get('user');
+  $name = $user->first_name;
+  $html = '<h4>Dear <b>'.$name.'</b>,</h4>
+  <p>Congratulations! You have just verified and activated your account! That means, you can now enjoy all our features seemlessly which guest users can\'t!<p>
+  <br><p>
+  ';
+  $html .= '<br><p>In case you face any issue or problem browsing '.SITE_NAME.', or if you just wanna talk to us w.r.t. to anything about '.SITE_NAME.', please feel free to contact us at <span style="color:rgb(241,100,107);">support@'.$this->base.'. We would be really glad to be of use to you.';
+  $html .= '<br><p>Happy BOOKing!';
+  $this->setMailLayout($html,'Welcome Aboard');
+  $subject = 'Account activated';
+  return $this->send($user->email,$subject,$html,$this->headers);
+ }
+ 
+ public function setMailLayout(&$content,$heading,$footer = '')
+ {
+  // Always set content-type when sending HTML email
+  $this->headers = "MIME-Version: 1.0" . "\r\n";
+  $this->headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+  // More headers
+  $this->headers .= 'From: BookAvenue<support@'.$this->base.'>' . "\r\n";
+  // $this->headers .= 'Cc: myboss@example.com' . "\r\n";
+  $html = "
+  <div style='border:8px solid rgb(242,100,107); font-size:12px; font-family:sans-serif,calibri,arial,times roman; background:#e9e9e9;'>
+	<div style='border-bottom:3px solid rgb(242,100,107);'>
+		<div>
+			<a href='".$this->url."' target='_blank' style='color:rgb(242,100,107); text-decoration:none;'>
+				<img src='".$this->url."/pages/default/resources/images/logo_red.png' style='max-width:40px; vertical-align:bottom; margin-left:15px; margin-top:10px'>
+				<div style='text-transform:uppercase; display:inline-block;'>
+					<div style='font-size:130%; font-weight:bold; '>Book</div>
+					<div style='font-size:115%;'>Avenue</div>
+				</div>
+			</a>
+		</div>
+	</div>
+	<div style='background:#fff;'>
+		<div style='background:#222222; color:rgb(242,100,107); font-size:140%; padding:10px;'>
+			%mail_heading%
+		</div>
+		<div style='font-size:110%; padding:10px; margin-top:15px;'>
+			%mail_content%
+			<br><br><br>
+			  Sincerely,<br>
+			  Support Team<br>
+			  BookAvenue
+		</div>
+	</div>
+	<div style='font-size:85%; padding:10px; color:#000;  background:rgb(242,100,107)'>
+		%footer_msg%
+	</div>
+  </div>";
+  if($footer=='')
+   $footer = 'This is an autogenerated mail. Please do not reply to this email as this email id is not monitored and any replies sent to this email address will bounce back to you.
+   <hr>For any kind of support information, please contact us at <a href="mailto:support@'.$this->base.'">support@'.$this->base.'</a>.<br>
+   You can also write us to us at:<br>
+   BookAvenue, 302A, Nambardar Apartments, Sultanpur, New Delhi, 110030';
+  $html = str_replace('%mail_heading%',$heading,$html);
+  $html = str_replace('%footer_msg%',$footer,$html);
+  $content = str_replace('%mail_content%',$content,$html);
+ }
+}

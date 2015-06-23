@@ -1,0 +1,95 @@
+<div class='brief_wrapper about_us col-lg-12 clearfix'>
+    <div class='one_row col-xs-12 col-sm-10 col-md-10 col-lg-10 col-sm-offset-1 col-md-offset-1 col-lg-offset-1' id='verified-member'>
+        <h2>Major Brands we deal in
+        </h2>
+        <div class='brands_list clearfix' id='brands'>
+            <div class='container'>
+                <?php
+                 $base = level.'pages/default/resources/images/brands/';
+                ?>
+                <img src='<?php echo $base?>apple.jpg' class='active'>
+                <img src='<?php echo $base?>bb.png'>
+                <img src='<?php echo $base?>htc.png'>
+                <img src='<?php echo $base?>moto.jpg'>
+                <img src='<?php echo $base?>samsung.jpg'>
+                <img src='<?php echo $base?>sony.jpg'>
+                <img src='<?php echo $base?>lg.jpg'>
+                <img src='<?php echo $base?>canon.jpg'>
+                <img src='<?php echo $base?>xbox360.jpg'>
+                <img src='<?php echo $base?>nintendo.jpg'>
+                <img src='<?php echo $base?>nokia.jpg'>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='banner_wrapper col-lg-12 clearfix'>
+    <div class='images_wrapper'>
+    <?php
+        $files = array('iphone-6-banner.jpg', 'nexus6.jpg', 'p8-banner.jpg', 'p8max.jpg', 'noteedge.jpg', 'alpha.jpg','applewatch.png', '360.jpg', 'home-slider-slide-3.png');
+        $wid = 100/count($files);
+    ?>
+        <div class='images_container clearfix' style='width:<?php echo 100*count($files)?>%'>
+        <?php
+            foreach($files as $img)
+            echo "<img src='pages/default/resources/images/$img' class='pull-left' style='width:$wid%'>" ;
+        ?>
+        </div>
+    </div>
+    <div class='marker_wrapper' style='bottom:5px'>
+        <div class='marker_container'>
+        <?php
+        for($i=0; $i<count($files); $i++)
+        {
+            $class = empty($class)? 'active':true;
+            echo "<div class='marker $class'></div>";
+        }
+        ?>
+        </div>
+    </div>
+</div>
+<div class='banner_wrapper col-lg-12 clearfix'>
+    <div class='text_banner fix_wid'>
+        <div class='col-lg-10 col-lg-offset-1'>
+            <div class='text_container var_wid clearfix'>
+                <div class='one_item pull-left clearfix'>
+                    <div class='pull-left'>
+                        <div class='heading'>
+                            Get best deals on all latest mobile phones
+                            <div class='subheading'>
+                                With self stock holding and quickest delivery!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='brief_wrapper about_us col-lg-12 clearfix'>
+    <div class='col-lg-10 col-lg-offset-1'>
+        <div class='var_wid clearfix'>
+            <div class='col-lg-4 one_box'>
+                <div class='cat_icon' id='authentic'></div>
+                <h1>Authentic
+                    <div class='subheading'3>Verified company</div>
+                </h1>
+                <div class='desc'>We are a verified member of B2B portals</div>
+            </div>
+            <div class='col-lg-4 one_box'>
+                <div class='cat_icon' id='badge'></div>
+                <h1>Excellence
+                    <div class='subheading'3>since four years</div>
+                </h1>
+                <div class='desc'>In just four years, we've become a leading handset trading company!</div>
+            </div>
+            <div class='col-lg-4 one_box'>
+                <div class='cat_icon' id='global'></div>
+                <h1>International
+                    <div class='subheading'3>business relations</div>
+                </h1>
+                <div class='desc'>Leading International traders, worldwide distributors and retailers of mobiles in UAE.</div>
+            </div>
+        </div>
+    </div>
+</div>
+<img class='img img-responsive' src='<?php echo level.'pages/default/resources/images/best-phones.jpg'?>' style='width:100%'>

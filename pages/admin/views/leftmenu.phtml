@@ -1,0 +1,38 @@
+<?php
+$menu = array('pages'=>array('add new','list'),
+              'db'=>array('home','list'));
+// echo CURRENT_PAGE;
+?>
+<ul class="nav nav-sidebar">
+    <?php
+    $list = $menu[VIEW];
+    $aitem = isset($this->data['option'])?$this->data['option']:$list[0];
+    $link = baseURL.DS.PAGE.DS.VIEW.DS.'option';
+    foreach($list as $li)
+    {
+	 $name = VIEW=='pages'?sRequest::_get('page'):sRequest::_get('option','home');
+     if($li == 'list')
+     {
+	  if(VIEW=='pages')
+	   $local_list = Page::getList();
+	  else if(VIEW=='db')
+	   $local_list = $this->_dbo->getTables();
+       
+	  for($i=0; $i<count($local_list); $i++)
+	  {
+       $link = baseURL.DS.CURRENT_PAGE.DS.CURRENT_VIEW.DS.'option';
+	   $local_link = sRequest::filterVar($local_list[$i]);
+	   $label = VIEW!='db'? str_replace('_',' ',$local_list[$i]): $local_list[$i];
+       $label = ucwords($local_list[$i]);
+	   $cl = $name==$local_link?' class="active"':'';
+	   echo "<li$cl><a href='$link/$local_link'>".$label.'</a>';
+	  }
+     }
+     else
+     {
+      $cl = $name==strtolower(str_replace(' ','_',$li))?'class="active"':'';
+      echo "<li $cl><a href='/$link/".str_replace(' ','_',$li)."'>".ucwords($li)."</a></li>";
+     }
+    }
+    ?>
+</ul>

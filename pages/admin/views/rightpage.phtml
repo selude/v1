@@ -1,0 +1,176 @@
+<?php
+$page = $this->GET('option','add_new');
+$err = false;
+if(isset($_POST['pagename']))
+{
+ $view = CURRENT_VIEW;
+ // print_r($_POST);
+ $result = $this->dco->$view($_POST);
+ if($result['success'])
+  $this->redirect('this.pages/option/'.$_POST['pagename']);
+ else
+  $err = $result['message'];  
+}
+if($err && $page=='add_new')
+{
+?>
+<div class='alert alert-danger'>
+	<strong>Error!</strong> <?php echo $err; ?>
+</div>
+<?php
+}
+if($page=='add_new')
+{
+?>
+<h1 class='page-header'>Add New Page</h1>
+<div class='well col-xs-12 col-sm-5 col-lg-6'>
+	<p>
+	You can add new pages to your project using this page. In this step, you have to enter the page name (without any spaces), page label (which will be shown in title bar and other places) and describe this page. This information will be stored in META file for the page. This serves in SEO of the website.
+	</p>
+	<p>
+	Once the page is defined, you can add views to this page in next step.
+	</p>
+</div>
+<div class='col-xs-12 col-sm-7 col-lg-6'>
+	<form class="form-horizontal" role="form" method='post' action='<?php echo baseURL.DS.CURRENT_PAGE.DS.CURRENT_VIEW; ?>'>
+		<div class='form-content'>
+				<label class="col-xs-12 col-sm-12 col-lg-12 control-label">
+				Please enter a uniue page name
+				</label>
+				<div class="col-xs-12 col-sm-12 col-lg-12">
+					<input type="text" class="form-control" placeholder="Enter a unique page name in your project's scope" name="pagename">
+					<span class="help-block">
+					This page name has to be unique in your project's scope, i.e., no two pages in a project can have same name (but they can have same labels!)</span>
+				</div>
+				<input type='submit' value='Create page' class='btn btn-primary col-xs-offset-3 col-sm-offset-3 col-lg-offset-3 col-xs-8 col-sm-8 col-lg-8'>
+			</div>
+	</form>
+</div>
+<?php
+}
+else
+{
+?>
+<div class="pd-ver-10 jumbotron">
+	<h2 style='margin-top:0; margin-bottom:15px;'><?php echo ucfirst($page); ?> page: Views</h2>
+	<p>You can add more <i>Views</i> or <i>Partial Views</i> for this page here. By default, index view has been added to this page. You can customize or edit this view using the <i>edit</i>option.</p>
+	<p>To customize the visual layout of a view, select a view from the list, go to it's edit option and then choose <i>Designer.</i></p>
+</div>
+<ol class="nav nav-tabs" id='nav'>
+	<li class='active'><a data-toggle="tab" href='#viewsList'>Views</a>
+	<li><a data-toggle='tab' href="#partialViewsList">Partial views</a>
+</ol>
+<br class='clear'>
+<div class="tab-content">
+	<div class='tab-pane fade in active' id='viewsList'>
+	<?php listPageViews($page); ?>
+	</div>
+	<div class='tab-pane fade' id='partialViewsList'>
+	<?php listPagePartialViews($page); ?>
+	</div>
+</div>
+<?php
+}
+
+function listPageViews($pagename)
+{
+ $list = getViewsList($pagename);
+ $list = isset($list['view'])?$list['view']:false;
+?>
+<div class='col-xs-6 col-sm-3 sidebar-offcanvas'>
+	<div class='list-group views-list'>
+		<a class="list-group-item active" href="#">Add New</a>
+		<?php
+		$link = baseURL.DS.$pagename;
+		for($i=0; $i<count($list); $i++)
+		{
+		 $cl = !$i? 'active':'';
+		 echo "<a class='list-group-item' href='$link/$list[$i]'>".ucwords(str_replace('_',' ',$list[$i]))." View</a>";
+		}
+		if(!$list)
+		{
+		 echo '
+		 <a class="list-group-item inactive" href="javascript:void(0)">No view added</a>';
+		}
+		?>
+	</div>
+</div>
+<?php
+ $link = baseURL.DS;
+ $path = count($list)?$pagename.DS.$list[0]:false;
+ if($path)
+ {
+  $path = $link.$path;
+	echo "<iframe class='col-xs-6 col-sm-8 sidebar-offcanvas' src='$path' id='viewWindow'></iframe>";
+ }
+ else
+ {
+  $path = 'pages'.DS.CURRENT_PAGE.DS.'resources/images/noviewsadded.png';
+  $path = $link.$path;
+	echo "<img class='col-xs-6 col-sm-8 sidebar-offcanvas img-responsive' src='$path' id='viewWindow'>";
+ }
+}
+
+function listPagePartialViews($pagename)
+{
+ $list = getViewsList($pagename);
+ $list = isset($list['partialView'])?$list['partialView']:false;
+?>
+<div class='col-xs-6 col-sm-3 sidebar-offcanvas'>
+	<div class='list-group views-list'>
+		<a class="list-group-item active" href="#">Add New</a>
+		<?php
+		$link = baseURL.DS.$pagename;
+		for($i=0; $i<count($list); $i++)
+		{
+		 $cl = !$i? 'active':'';
+		 echo "<a class='list-group-item' href='$link/$list[$i]'>"
+		 .ucwords(str_replace('_',' ',$list[$i]))." View</a>";
+		}
+		if(!$list)
+		{
+		 echo '
+		 <a class="list-group-item inactive" href="javascript:void(0)">No view added</a>';
+		}
+		?>
+	</div>
+</div>
+<?php
+ $link = baseURL.DS;
+ $path = count($list)?$pagename.DS.$list[0]:false;
+ if($path)
+ {
+  $path = $link.$path;
+	echo "<iframe class='col-xs-6 col-sm-8 sidebar-offcanvas' src='$path' id='viewWindow'></iframe>";
+ }
+ else
+ {
+  $path = 'pages'.DS.CURRENT_PAGE.DS.'resources/images/noviewsadded.png';
+  $path = $link.$path;
+	echo "<img class='col-xs-6 col-sm-8 sidebar-offcanvas img-responsive' src='$path' id='viewWindow'>";
+ }
+}
+
+function getViewsList($pagename)
+{
+ require_once 'pages/'.$pagename.'/viewController.php';//for Page class
+ require_once 'layouts/'.$pagename.'.php';//for Layout class
+ 
+ $layoutClass = $pagename.'Layout';
+ $temp = new $layoutClass();
+ 
+ $controllerClass = $pagename.'Page';
+ $contObj = new $controllerClass();
+ 
+ $result = array();
+ foreach($temp->layout_chunks as $view_key=>$detail)
+ {
+  $method = $view_key.'View';;
+  if(method_exists($contObj,$method))
+   $result['view'][] = $view_key;
+  else
+   $result['partialView'][] = $view_key;
+ }
+ return $result;
+}
+?>

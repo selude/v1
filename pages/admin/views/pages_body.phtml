@@ -1,0 +1,516 @@
+<?php
+$page = '';
+$pagename = '';
+if(isset($_POST['pagename']))
+{
+ $this->processData($_POST);//same as dataController()
+ $pagename  = $_POST['pagename'];
+ unset($_POST);
+ $this->redirect('this.pages/page/'.$pagename);
+}
+else if(isset($_POST['viewName']))
+{
+ $page = sRequest::_get('page',sRequest::_get('option','default'));
+ $this->dataController($_POST);
+ // die;
+ unset($_POST);
+ $this->redirect("this.pages/page/$page/option/add-view/step/2");
+}
+$option = sRequest::_get('option',false);
+$pagename = sRequest::_get('page',false);
+global $configuration;
+$page_label = ucfirst($configuration['about']['namespace']);
+?>
+<div class='addpage-intro sidebar col-sm-4 col-md-4 col-lg-4'>
+	<div class='row'>
+		<h4 class='col-sm-11 col-md-7 col-lg-7'>
+			Pages added
+		</h4>
+		<a type='button' class='btn btn-success btn-sm col-sm-11 col-md-4 col-lg-4' data-target='#addPage' data-toggle='modal'>
+			<span class='glyphicon glyphicon-plus'>
+			</span>
+			Add new page
+		</a>
+	</div>
+<?php
+	$pageslist = Page::getList();
+	if(count($pageslist))
+	{
+	 echo '<ul class="pages-list">';
+	 $link = baseURL.DS.CURRENT_PAGE.DS.'ceditor/pagename/this/index';
+	 $url = baseURL.DS.CURRENT_PAGE.DS.CURRENT_VIEW.DS.'page'.DS;
+	 foreach($pageslist as $page)
+	 {
+	  $cl = $pagename==$page?'active':'';
+	 ?>
+	  <li class='container-fluid <?php echo $cl; ?>'>
+		<a href='<?php echo $url.$page; ?>' class='pagelink col-xs-11 col-sm-11 col-md-11 col-lg-11'><?php echo $page; ?></a>
+		<div class='down-arrow col-xs-1 col-sm-1 col-md-1 col-lg-1 glyphicon glyphicon-align-justify'></div>
+		<b class='clearfix'></b>
+		<div class='sublist hidden'>
+			<a href='<?php echo str_replace('this',$page,$link); ?>' class='btn btn-primary btn-sm' target='_blank'>
+				<div class='glyphicon glyphicon-pencil'></div>
+				Code Editor
+			</a>
+			<button class='btn btn-primary btn-sm'>
+				<div class='glyphicon glyphicon-cog'></div>
+				Change Theme
+			</button>
+			<button class='btn btn-danger btn-sm' rel="<?php echo $page; ?>" data-toggle="modal" href="#deletePagePopup">
+				<div class='glyphicon glyphicon-trash'></div>
+				Delete Page
+			</button>
+		</div>
+	  </li>
+	  <?php
+	 }
+	 echo '</ul>';
+	}
+	else
+	{
+	?>
+	<div class='container-fluid' style='padding:10px 0'>
+		<div class='col-sm-2 col-md-3 col-lg-3 invalid-page-image' style='background-image: url("../pages/admin/resources/images/page_sorry.png");'>
+		</div>
+		<div class='col-sm-10 col-md-9 col-lg-9'>
+			<h4 style='margin-top:0'>No page added!</h4>
+			<p>
+				No page was found added for this project. Why don't you add a few! Don't be shy, go ahead!
+			</p>
+		</div>
+	</div>
+	<?php
+	}
+	?>
+</div>
+<?php
+$popup_msg = session::get('popup[message]',false);
+if($popup_msg)
+{
+ $alert_type = session::get('popup[success]') ?'success':'danger';
+ $popup_title = $alert_type=='success'?'Success':'Error';
+ session::set('popup',false);
+}
+?>
+<div class='col-sm-8 col-md-8 col-lg-8 col-sm-offset-4 col-md-offset-4  col-lg-offset-4 main page-display'>
+	<?php
+	if($popup_msg)
+	{
+	?>
+	<div class='modal fade' tabindex='-1' role='dialog' area-labelledby='myLabel' aria-hidden='true' id='pageError'>
+		<div class='modal-dialog'>
+			<div class='modal-content alert-<?php echo $alert_type; ?>'>
+				<div class='modal-header'>
+					<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+					<h4 class='modal-title' id='myModalLabel'>
+					<?php echo ucfirst($popup_title); ?></h4>
+				</div>
+				<div class='modal-body'>
+					<?php echo $popup_msg; ?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php
+	}
+	if(!$pagename)//no page selected
+	{
+	?>
+	<h3>Selude | Pages & Page Views</h3>
+	<div class='well'>
+		<p>
+		<strong>Q. What are Pages?</strong> Pages are what you browse through when you visit a website. Right now too you are seeing a page. However, to be precise, you're seeing a view of one page. That means, a page can have different views depending on what option you had chosen, or what option was chosen by default.
+		</p><br>
+		<a href='#' class='btn btn-primary btn-sm'>Read More</a>
+	</div>
+	<div class='well'>
+		<p>
+		<strong>Q. What are Page Views?</strong> Page views are the basic components of any page. They are formed of basic entities of HTML and Javascript and together they form a complete page. A page may contain a number of views and a view may be a result of composite views from same or different pages.</p>
+		<p style='margin-top:15px;'>Views can be defined as partial views (without having any callback methods) or complete view (having callback methods). A page can derive other pages' views in its child views in either definition (in layout file) or it can include a view directly in it's view's callback method.</p><br>
+		<a href='#' class='btn btn-primary btn-sm'>Read more</a>
+	</div>
+		<!--Dialog for 'Delete page' popup-->
+		<div class='modal fade' id='deletePagePopup' tabindex='-1' role='dialog' area-labelledby='deletePagePopup' aria-hidden='true'>
+			<div class='modal-dialog'>
+				<div class='modal-content'>
+					<div class='modal-header'>
+						<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+						<h4 class='modal-title' id='myModalLabel'>
+						Delete page?
+						</h4>
+					</div>
+					<div class='modal-body'>
+						Are you sure you want to delete page <span class='delete_page'>DummyName</span>? This will delete all the files and directories associated with <span class='delete_page'>DummyName</span>. This might <b>also</b> affect other pages' layouts/views if any of them might have included one or more of <span class='delete_page'>DummyName</span>'s views.
+					</div>
+					<div class='modal-footer'>
+						<button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+						<button type='button' class='btn btn-danger' name='deletePage'>Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	<?php
+	}
+	else
+	{
+	 $option = sRequest::_get('option');
+	 if($option=='add-view')
+	 {
+	  $step = sRequest::_get('step',0);
+	  drawAddViewForm($pagename,$step,$this);
+	 }
+	 else
+	 {
+	 ?>
+	 <h3>Views in page <b><?php echo $pagename; ?></b>
+		 <a href='<?php echo $url.$pagename.DS.'option/add-view' ?>' class='btn btn-success btn-sm col-xs-12 col-sm-2 col-md-2 col-lg-2 pull-right clearfix'>
+			<span class="glyphicon glyphicon-plus"></span> Add new View
+		 </a>
+	 </h3>
+	 <div class='row page-list-container'>
+		<?php
+		$viewname = sRequest::_get('view');
+		$viewslist = Page::getViewsList($pagename);
+		$level = $this->getPathLevels();
+		drawViewsList($pagename,$viewslist,$level);
+		?>
+	</div>
+	 <?php
+	 }
+	}
+	drawPopups($pagename);
+	?>
+	</div>
+</div>
+<?php
+
+function drawPopups($pagename)
+{
+print<<<END
+<!--Dialog for 'Delete View' popup-->
+<div class='modal fade' id='deleteViewPopup' tabindex='-1' role='dialog' area-labelledby='deleteViewPopup' aria-hidden='true'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h4 class='modal-title' id='myModalLabel'>
+				Delete View?
+				</h4>
+			</div>
+			<div class='modal-body'>
+				Are you sure you want to delete view <span class='delete_page delete_view'>DummyName</span> from page <span class='delete_page parent_page'>dummyPage</span>? This will delete all the files, directories and data associated with view <span class='delete_page delete_view'>DummyName</span>. This might <b>also</b> affect other pages' views if any of them have included <span class='delete_page delete_view'>DummyName</span> view in any of their views.
+			</div>
+			<div class='modal-footer'>
+				<button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+				<button type='button' class='btn btn-danger' name='deleteView'>Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--Dialog box for 'Add new page'-->
+<div class='modal fade' id='addPage' tabindex='-1' role='dialog' area-labelledby='myLabel' aria-hidden='true'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+				<h4 class='modal-title' id='myModalLabel'>Add new page</h4>
+			</div>
+			<form class="form-horizontal" role="form" method='post' action=''>
+			<div class='modal-body form-content'>
+				<label class="col-xs-12 col-sm-4 col-lg-4 control-label">
+				Enter a pagename
+				</label>
+				<div class="col-xs-12 col-sm-8 col-lg-8">
+					<input type="text" class="form-control" placeholder="Enter a unique page name in your project's scope" name="pagename">
+				</div>
+				<span class="help-block clearfix">
+				This page name has to be unique in your project's scope, i.e., no two pages in a project can have same name (but they can have same labels!)
+				</span>
+			</div>
+			<div class='modal-footer'>
+				<button type='button' class='btn btn-default' data-dismiss='modal'>Cancel</button>
+				<button type='submit' class='btn btn-success'>Create</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!--End of popup-->
+END;
+}
+
+function drawViewsList($pagename,$viewslist,$level)
+{
+ if(!count($viewslist))
+ {
+ ?>
+<div class='page-name-wrapper add-page'>
+	<div class='page-content-wrapper clearfix'>
+		<div class='col-sm-2 col-md-3 col-lg-3 page-image invalid-page-image' style='background-image:url("<?php echo $level; ?>pages/admin/resources/images/page_sorry.png");'>
+		</div>
+		<div class='col-sm-10 col-md-9 col-lg-9 page-description'>
+			<h2 style='margin-top:0'>No views added!</h2>
+			<p>
+				No view was found added for this page. Why don't you add a few! Don't be shy, go ahead!
+			</p>
+		</div>
+	</div>
+</div>
+<?php
+ }
+ else
+ {
+  for($i=0; $i<count($viewslist); $i++)
+  {
+   $viewname = $viewslist[$i];
+   $meta = Page::getViewMeta($pagename,$viewname);
+   // print_r($meta);
+   $img = isset($meta['image'])
+			?$meta['image']
+			:'pages/admin/resources/images/page_sorry.png';
+   $def_img_class = !isset($meta['image'])?'invalid-page-image':'';
+   $img = $level.$img;
+   $title = isset($meta['title'])?$meta['title']:'Not available';
+   $author = isset($meta['author'])?$meta['author']:'Not available';
+   $desc = isset($meta['description'])?$meta['description']:'No description available';
+   if($desc!='No description available' && count($desc)>150)
+   {
+    $desc = substr($desc,0,40);
+    $desc .= '...';
+   }
+   $cl = $viewname == str_replace('View','',$viewslist[$i])?' active-view':'';
+   ?>
+<div class='page-name-wrapper<?php echo $cl; ?>'>
+	<div class='page-content-wrapper clearfix'>
+		<div class='col-sm-2 col-md-3 col-lg-3 page-image <?php echo $def_img_class; ?>' name='viewImage' style='background-image:url("<?php echo $img; ?>");'>
+		</div>
+		<div class='col-sm-10 col-md-9 col-lg-9 page-description'>
+			<h5>
+				<span name='viewName'><?php echo $viewname; ?></span>
+				(Title: <span name='viewLabel'><?php echo $title; ?></span>)
+			</h5>
+			<h6>Author: <span name='viewAuthor'><?php echo $author; ?></span></h6>
+			<p name='viewDesc'>
+				<?php echo $desc;?>
+			</p>
+		</div>
+	</div>
+	<div class='page-action'>
+		<?php
+		$base = baseURL.DS.CURRENT_PAGE.DS;
+		$view = str_replace('View','',$viewname);
+		?>
+		<a href='<?php echo $base.CURRENT_VIEW."/page/$pagename/option/add-view/view/$view/step/1"; ?>' class='btn btn-primary btn-sm'>
+			Edit details
+		</a>
+		<a href='<?php echo $base."designer/page/$pagename/view/$view"; ?>' class='btn btn-primary btn-sm' alt='Edit in Designer'>
+			Designer
+		</a>
+		<a href='<?php echo $base."ceditor/page/$viewname"; ?>' class='btn btn-primary btn-sm' alt='Edit in Code Editor'>
+			Code Editor
+		</a>
+		<a href='#deleteViewPopup' class='btn btn-danger btn-sm' data-toggle='modal' rel='<?php echo $pagename.'_'.$viewname; ?>'>
+			Delete View
+		</a>
+	</div>
+</div>
+<?php
+  }
+ }
+}
+
+function drawAddViewForm($pagename,$step,$current)
+{
+ $url = baseURL.DS.CURRENT_PAGE.DS.CURRENT_VIEW.DS.'page'.DS.$pagename.DS.'option'.DS.'add-view/step/'.($step+1);
+ switch($step)
+ {
+  case 0:
+	formStep0($url,$current);
+  break;
+  
+  case 1:
+	formStep1($url);
+  break;
+  
+  case 2:
+	formStep2($url);
+  break;
+ }
+}
+
+function formStep0($url,$current)
+{
+ $skip_step_1 = isset($_COOKIE['add_view_skip_1'])?$_COOKIE['add_view_skip_1']:false;
+ if($skip_step_1)
+  $this->redirect("admin/pages/page/$pagename/option/add-view/step/2");
+print<<<END
+<div class='row'>
+	<div class='jumbotron' style='margin-bottom:0'>
+		<h2>Add Views: What is it?</h2>
+		<p>Views are what you see on any page. And one page may contain numerous views, showing one or more at a time, depending upon what option you had chosen or what values you had passed.</p>
+		<p>
+		Basically, Views can be created by two ways: Using a theme, or Using designer.
+		When you use theme selector, you are offered with different layouts (page designs) to pick from. You choose a design and it is all yours!
+		<p>When you choose designer, you will be taken to a page where you can design the whole layout on your own. The benefit of using Designer is that you can fill data in views or create different partial views within a single page by allowing them to show only when a certain condition is met.
+		<p>If you are more smart (which we assume, you are), you may like to do all the dirty stuff on your own. Try using our Code Editor to create everything you want.
+		<p>Please follow these links for more details on Views, Partial Views, Designer and Code Editor.
+		<p>
+			<a href='#' class='btn btn-primary btn-lg'>Searching something else?</a>
+		</p>
+		<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+			<input type='checkbox' name='skip_step'> Don't show this again.
+		</div>
+		<a href='$url' class='btn btn-lg btn-success' style='margin-top:20px;'>Goto Step 1</a>
+	</div>
+</div>
+END;
+}
+
+function formStep1()
+{
+ $pagename = URL::getVar('page');
+ $view = URL::getVar('view',0);
+ $meta = Page::getViewMeta($pagename,$view);
+print<<<LAST
+<!--'Add new View'-->
+<div class='row'>
+	<div class='addview-label jumbotron container-fluid'>
+		<div class='col-xs-12 col-sm-5 col-md-5 col-lg-5 heading'>
+			Add Views
+		</div>
+		<div class='col-xs-12 col-sm-7 col-md-7 col-lg-7 add-view-description'>
+			In this step, you have to specify details about the View. You can click 'Next' to proceed to further editing of View using 'Designer' or other options, or you can simply choose to 'Save and exit'.
+		</div>
+	</div>
+</div>
+<div>
+	<form class="form-horizontal" role="form" method='post' action='' enctype='multipart/form-data'>
+	<input type='hidden' name='edit' value='$view'>
+	<div class='form-content' name='viewBG' style='background-repeat:no-repeat; background-size:contain'>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-lg-3 control-label">
+			View Label
+			</label>
+			<div class="col-xs-12 col-sm-9 col-lg-9">
+				<input type="text" class="form-control" placeholder="This need not to be unique" name="viewLabel">
+				<span class="help-block">
+				This is what will be visible on the titlebar of the browser.
+				</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-lg-3 control-label">
+			View Name
+			</label>
+			<div class="col-xs-12 col-sm-9 col-lg-9">
+				<input type="text" class="form-control" placeholder="Please enter a unique view name in current page's scope" name="viewName">
+				<span class="help-block">
+				This is actual name of the view and shall be visible in links and address bar.
+				</span>
+			</div>
+		</div>
+		<div class="form-group view_editfield">
+			<label class="col-xs-12 col-sm-3 col-lg-3 control-label">
+			Authored by
+			</label>
+			<div class="col-xs-12 col-sm-9 col-lg-9">
+				<input type="checkbox" checked='true' name="defAuthor"> Default Author
+			</div>
+			<div class="col-xs-12 col-sm-9 col-lg-9 hidden">
+				<input type="text" class="form-control" name="viewAuthor">
+				<span class="help-block">
+				This is optional. However, as this will be shown along with the description of the view, you might like to give the credit to actual author of the page.
+				</span>
+			</div>
+		</div>
+		<div class="form-group view_editfield">
+			<label class="col-xs-12 col-sm-3 col-lg-3 control-label">
+			View Image
+			</label>
+			<div class="col-xs-12 col-sm-9 col-lg-9">
+				<input type="file" class="form-control"name="viewFile" multiple='false'>
+				<span class="help-block">
+				This image shall be displayed along with description on websites like Facebook and search results with link of this page.
+				</span>
+			</div>
+		</div>
+		<div class="form-group view_editfield">
+			<label class="col-xs-12 col-sm-3 col-lg-3 control-label">
+			View Description
+			</label>
+			<div class="col-xs-12 col-sm-9 col-lg-9">
+				<textarea placeholder='Please enter a view description' class="form-control" name="viewDesc"></textarea>
+				<span class="help-block">
+				This description will be visible in search results and on websites like Facebook respective to a search or sharing of this page's link.
+				</span>
+			</div>
+		</div>
+	</div>
+	<div style='margin-top:-25px' class='form-group'>
+		<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-sm-offset-8 col-md-offset-8 col-lg-offset-8">
+			<button type='submit' class='btn btn-primary'>
+				Next
+				<span class='glyphicon glyphicon-chevron-right' style='margin-left:10px;'>
+				</span>
+			</button>
+			<button type='submit' class='btn btn-success'>
+				Save & Exit
+				<span class='glyphicon glyphicon-share-alt' style='margin-left:5px;'>
+				</span>
+			</button>
+		</div>
+	</div>
+	</form>
+</div>
+LAST;
+}
+
+function formStep2()
+{
+ $pagename = URL::getVar('page');
+ $view = URL::getVar('view',0);
+print<<<LAST
+<!--'Add new View'-->
+<div class='row'>
+	<div class='addview-label jumbotron container-fluid'>
+		<div class='col-xs-12 col-sm-5 col-md-5 col-lg-5 heading'>
+			Design Your View
+		</div>
+		<div class='col-xs-12 col-sm-7 col-md-7 col-lg-7 add-view-description'>
+			You can define the visual layout of your view in either of the three ways:
+			<ol style='padding:10px;'>
+			<li>Choose a template, which will override all the content (if any) of current view, using a template file. Read more here.
+			<li>Create using designer, where you can pick view contents (partial views) from other pages and reuse them. Additionally, you can do lot more stuff. Easiest. Read more here.
+			<li>Create using Code Editor. If you're a programming geek, go here and exploit the code, create your own or just reuse the existing code!
+		</div>
+	</div>
+</div>
+<div>
+	View addded successfully!
+</div>
+LAST;
+}
+
+function getViewsList($pagename)
+{
+ require_once 'pages/'.$pagename.'/viewController.php';//for Page class
+ require_once 'layouts/'.$pagename.'.php';//for Layout class
+ 
+ $layoutClass = $pagename.'Layout';
+ $temp = new $layoutClass();
+ 
+ $controllerClass = $pagename.'Page';
+ $contObj = new $controllerClass();
+ 
+ $result = array();
+ foreach($temp->layout_chunks as $view_key=>$detail)
+ {
+  $method = $view_key.'View';;
+  if(method_exists($contObj,$method))
+   $result['view'][] = $view_key;
+  else
+   $result['partialView'][] = $view_key;
+ }
+ return $result;
+}
+?>

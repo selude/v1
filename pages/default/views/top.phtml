@@ -1,0 +1,30 @@
+<div class='top_wrapper container-fluid'>
+    <div class='top_container col-lg-10 col-lg-offset-1 clearfix'>
+        <a href='<?php echo baseURL?>' class='pull-left col-xs-10 col-sm-5 home_icon' style='padding:0'>
+            <img src='<?php echo level?>pages/default/resources/images/logo.png' class='img img-responsive'>
+            <span class='name'>
+                <span>my dummy</span> company
+            </span>
+        </a>
+        <button type="button" class="navbar-toggle fade in col-xs-1" data-toggle="collapse" data-target="#main-menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <div class='pull-right main_menu'>
+            <ul class=' collapse navbar-collapse menu' id='main-menu'>
+            <?php
+                $menu = array('index'=>'home',
+                              'about'=>'about us',
+                              'contact'=>'contact us');
+                foreach($menu as $link=>$label)
+                {
+                 $href = baseURL.DS.App::_route("default/$link");
+                 $class = view==$link?' class="active"':'';
+                 echo "<li><a href='$href' $class>".ucwords($label).'</a>';
+                }
+            ?>
+            </ul>
+        </div>
+    </div>
+</div>

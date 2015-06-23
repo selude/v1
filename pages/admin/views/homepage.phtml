@@ -1,0 +1,104 @@
+<?php
+// $dbo = $this->DBO();
+$admin = session::get('admin',false);
+// if($dbo->myID)
+if(!$admin)
+{
+ // $this->showPartialView('this.homepage');
+ $err = $this->_get('error',false);
+ $username = $this->_post('username');
+ if($username)
+ {
+  $view = CURRENT_VIEW;
+  $result = $this->dco->$view($_POST);//this will automatically redirect page
+  // $this->DBO();//init db
+  
+  if(!$result['success'])//invalid login
+  {
+   session::set('err_msg',$result['message']);
+   $this->redirect('this.index.err.'.$result['err_code']);
+  }
+  else
+   adminHomePage();
+ }
+ else
+ {
+  $err = session::get('popup',false);
+  adminLoginPage($err);
+ }
+}
+else//it has come here after login page, so no need of check
+{
+ // $this->showPartialView('this.loginpage');
+ adminHomePage();
+}
+?>
+<?php
+function adminLoginPage($err_msg=false)
+{
+ if($err_msg)
+ {
+  session::set('popup',false);
+ ?>
+ <script>
+ $(function()
+ {
+  $('#pageError').modal('show');
+ })
+ </script>
+ <!--error box-->
+ <div class='modal fade in' tabindex='-1' role='dialog' area-labelledby='myLabel' aria-hidden='true' id='pageError'>
+    <div class='modal-dialog'>
+        <div class='modal-content alert-danger'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title' id='myModalLabel'>
+                Error!</h4>
+            </div>
+            <div class='modal-body'>
+                <?php echo $err_msg; ?>
+            </div>
+        </div>
+    </div>
+ </div>
+<!--End of error box-->
+<?php
+}
+?>
+<div id='admin-page-wrapper'>
+	<div id='login-box'>
+		<h3>Admin Login</h3>
+        <h4>
+            Enter username and password of your Admin account. You need to log in to get access of admin pages.
+        </h4>
+		<form class="form-horizontal" role="form" method='post' action='<?php echo baseURL.DS.PAGE.DS.VIEW?>'>
+			<div class='form-content'>
+				<div class="input-group">
+                    <span class='input-group-addon'>
+                        <span class='glyphicon glyphicon-user'></span>
+                    </span>
+                    <input type="text" class="form-control" placeholder="Username of Administrator" name="username">
+				</div>
+				<div class="input-group" style='margin-top:15px'>
+                    <span class='input-group-addon'>
+                        <span class='glyphicon glyphicon-lock'></span>
+                    </span>
+                    <input type="password" class="form-control" placeholder="Password" name='password'>
+				</div>
+			</div>
+			<div class='submit_row'>
+				<input type='submit' value='Log in' class='btn btn-primary'>
+			</div>
+		</form>
+	</div>
+</div>
+<?php
+}
+
+function adminHomePage()
+{
+?>
+Welcome to admin homepage!
+<?php
+}
+?>

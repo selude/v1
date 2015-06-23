@@ -1,0 +1,60 @@
+.page_admin>.container-fluid
+{
+ padding:0 !important;
+}
+#admin-page-wrapper
+{
+ background:#c3c3c3;
+ text-align:center;
+ padding:25px;
+}
+#login-box
+{
+ display:inline-block;
+ margin-top:150px;
+ margin-bottom:150px;
+ border:1px solid #d3d3d3;
+}
+@media screen and (max-width:320px)
+{
+ #login-box
+ {
+  width:100%;
+ }
+}
+@media screen and (min-width:320px) and (max-width:768px)
+{
+ #login-box
+ {
+  width:60%;
+ }
+}
+@media screen and (min-width:768px)
+{
+ #login-box
+ {
+  width:40%;
+ }
+}
+#login-box>h3
+{
+ font-family:sans-serif,calibri,arial;
+ font-size:20px;
+ color:#fff;
+ background:#222222;
+ padding:10px;
+ margin:0;
+ text-align:left;
+}
+#login-box>.form-horizontal>.form-content
+{
+ padding:30px 10px;
+ background:#fff;
+ text-align:left;
+}
+#login-box>.form-horizontal>.submit_row
+{
+ background:#222222;
+ padding:10px;
+ text-align:right;
+}
